@@ -1,5 +1,7 @@
-*.bin
 .DS_Store
 /.vscode/
 target/*
 update.log
+*.o
+*.elf
+*.bin

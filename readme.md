@@ -74,7 +74,7 @@ int 0x16
 - 编译所有例子
 
 ```shell
-    make build
+    make all
 ```
 
 - 清除所有目标文件
