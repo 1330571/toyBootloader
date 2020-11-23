@@ -1,5 +1,5 @@
-SOURCES = ${wildcard kernel/*.c ports/*.c}
-HEADERS = ${wildcard kernel/*.h ports/*.h}
+SOURCES = ${wildcard kernel/*.c ports/*.c libc/*.c life/*.c}
+HEADERS = ${wildcard kernel/*.h ports/*.h libc/*.h life/*.h}
 # 对SOURCES变量集中的所有.c后缀替换为.o后缀
 OBJS = ${SOURCES:.c=.o}
 # Building Tools

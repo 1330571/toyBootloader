@@ -107,3 +107,9 @@ void nop(int count)
         for (int j = 0; j < count; ++j)
             ++nop_value;
 }
+
+void waitForKey()
+{
+    //未实现，仅仅等待一下
+    nop(UNITNOP6);
+}

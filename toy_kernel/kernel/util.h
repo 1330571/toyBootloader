@@ -1,3 +1,9 @@
+#ifndef _UTIL_H
+#define _UTIL_H
+
+#define VIDEO_SIZE 2000
+#define VIDEO_MEMORY 0xb8000
+
 #define UNITNOP 800
 #define UNITNOP2 1700
 #define UNITNOP2p 2200
@@ -12,11 +18,14 @@
 
 int fromPosToIdx(int x, int y);
 void fromIdxToPos(int idx, int *x, int *y);
-void print(int idx,char *str,char background);
+void print(int idx, char *str, char background);
 void makeColor(char *src, int r, int g, int b);
 void makeBackgroundColor(char *src, int r, int g, int b);
-void printWithCursor(int idx, char *str, char background,int waitTime);
+void printWithCursor(int idx, char *str, char background, int waitTime);
 void setCursorIdx(int idx);
 int getCursorIdx();
 void clearScreen();
 void nop(int count);
+void waitForKey();
+
+#endif

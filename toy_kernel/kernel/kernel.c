@@ -1,5 +1,6 @@
 #include "util.h"
 #include "../ports/ports.h"
+#include "../life/life.h"
 
 char *video_memory = (char *)0xb8000;
 
@@ -15,21 +16,30 @@ Have a good time to see Cellulars' life";
 void main()
 {
     int offset = fromPosToIdx(2, 0);
-    printWithCursor(offset, hello_str, (char)0x0f,0);
+    printWithCursor(offset, hello_str, (char)0x0f, 0);
     offset = fromPosToIdx(3, 0);
-    printWithCursor(offset, str1, (char)0x0f,0);
+    printWithCursor(offset, str1, (char)0x0f, 0);
     offset = fromPosToIdx(4, 0);
-    printWithCursor(offset, str2, (char)0x0f,0);
+    printWithCursor(offset, str2, (char)0x0f, 0);
     char color = 0x0F;
     makeColor(&color, 0, 0, 1);
     offset = fromPosToIdx(5, 0);
-    printWithCursor(offset, str3, color,UNITNOP3);
-    
+    printWithCursor(offset, str3, color, UNITNOP3);
+
     nop(UNITNOP5);
     clearScreen();
     nop(UNITNOP3);
 
     offset = fromPosToIdx(1, 0);
     makeColor(&color, 0, 1, 0);
-    printWithCursor(offset, str4, color,UNITNOP2);
+    printWithCursor(offset, str4, color, UNITNOP2);
+    nop(UNITNOP6);
+    refresh_display();
+    initState();
+    while (1)
+    {
+        nop(UNITNOP3);
+        nextState();
+        refresh_display();
+    }
 }
