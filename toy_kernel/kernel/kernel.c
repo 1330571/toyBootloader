@@ -33,8 +33,11 @@ void main()
     offset = fromPosToIdx(1, 0);
     makeColor(&color, 0, 1, 0);
     printWithCursor(offset, str4, color, UNITNOP2);
-    
-    nop(UNITNOP6);
+    nop(UNITNOP7);
+
+    __asm__ volatile("call 0X7E00");
+
+    nop(UNITNOP7);
     refresh_display();
     initState();
     while (1)

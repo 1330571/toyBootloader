@@ -4,7 +4,7 @@ disk_load:
 
     mov ah, 0x02
     mov al, dh
-    mov cl, 0x02
+    ; mov cl, 0x02 请从外部传入扇区号 控制读入的位置
 
     mov ch, 0x00
     mov dh, 0x00

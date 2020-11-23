@@ -15,13 +15,16 @@ load_kernel :
     mov bx, MSG_LOAD_KERNEL
     call print_and_wait
     ;load second sector, 2-stage boot load the second boot loader and then load kernel
-
-    
+    mov bx, SECOND_SECTOR
+    mov dh, 1;
+    mov dl, [BOOT_DRIVE]
+    mov cl, 0x02
+    call disk_load
 
     ;load kernel
     mov bx, KERNEL_OFFSET
     mov dh, 16 ; 随便写一个大一点的数字，让后面的文件可以加载进来，我猜
-    mov dl, [BOOT_DRIVE]
+    mov cl, 0x03 ; 设置一下读取的扇区 
     call disk_load
     ret
 
@@ -52,6 +55,7 @@ into_kernel:
 CONST_VARIABLESL: 
 
 KERNEL_OFFSET equ 0x1000
+SECOND_SECTOR equ 0x7C00 + 0x200
 BOOT_DRIVE db 0
 MSG_START db 'Boot Start', 0
 MSG_LOAD_KERNEL db 'Loading Kernel', 0
@@ -61,3 +65,10 @@ MSG_KEY_EVENT db 'Press key to next stage', 0
 times 510 - ($ - $$) db 0
 dw 0xAA55
 
+another_print:
+    mov ebx, WELCOME_AGAIN
+    call print_string_pm
+    ret
+
+WELCOME_AGAIN: db 'Hey Guys I Come Back, Do you like old stuff like this?'
+times 1024 - ($ - $$) db 0
