@@ -51,3 +51,43 @@ print_string_pm:
 .done:
     popa
     ret
+
+;清除屏幕
+clear_screen:
+    pusha
+
+    mov edx, VIDEO_MEMORY
+    mov cx,0xFA0
+    xor ax,ax
+
+.clear_loop: 
+    mov [edx], ax
+    add edx, 2
+    loop .clear_loop
+    
+    popa       
+    ret
+
+; this only works for 16-bit real mode
+; clear_screen:
+;     pusha
+
+;     mov ax,es
+;     push ax
+
+;     mov ax,0xb800
+;     mov es,ax
+    
+;     xor bx,bx;
+;     mov cx,0xFA0
+
+; .clear_loop:
+;     mov word [es:bx],0
+;     add bx,2
+;     loop .clear_loop
+
+;     pop ax
+;     mov es,ax
+
+;     popa
+;     ret

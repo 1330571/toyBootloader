@@ -14,7 +14,12 @@ org 0X7C00
 load_kernel : 
     mov bx, MSG_LOAD_KERNEL
     call print_and_wait
-    mov bx,KERNEL_OFFSET
+    ;load second sector, 2-stage boot load the second boot loader and then load kernel
+
+    
+
+    ;load kernel
+    mov bx, KERNEL_OFFSET
     mov dh, 16 ; 随便写一个大一点的数字，让后面的文件可以加载进来，我猜
     mov dl, [BOOT_DRIVE]
     call disk_load
@@ -31,6 +36,7 @@ print_and_wait:
 
 bits 32
 into_kernel: 
+    call clear_screen
     mov ebx, MSG_PROTECT_MODE
     call print_string_pm
     call KERNEL_OFFSET
@@ -49,8 +55,9 @@ KERNEL_OFFSET equ 0x1000
 BOOT_DRIVE db 0
 MSG_START db 'Boot Start', 0
 MSG_LOAD_KERNEL db 'Loading Kernel', 0
-MSG_PROTECT_MODE db 'Press key to into kernel', 0
+MSG_PROTECT_MODE db 'Kernel Start, Have a good time', 0
 MSG_KEY_EVENT db 'Press key to next stage', 0
 
 times 510 - ($ - $$) db 0
 dw 0xAA55
+
