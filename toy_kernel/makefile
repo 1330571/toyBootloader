@@ -44,7 +44,7 @@ run : os.bin
 
 .PHONY : clean 
 clean :
-	rm boot/*.o boot/*.bin kernel/*.o ports/*.o kernel.bin os.bin
+	rm boot/*.o boot/*.bin kernel/*.o ports/*.o kernel.bin os.bin libc/*.o life/*.o
 
 .PHONY : test
 test : 

@@ -113,3 +113,44 @@ void waitForKey()
     //未实现，仅仅等待一下
     nop(UNITNOP6);
 }
+
+// The following functions define a portable implementation of rand and srand.
+// Copy From OS-Dev
+static unsigned long int next = 1;
+
+int rand(void) // RAND_MAX assumed to be 32767
+{
+    next = next * 1103515245 + 12345;
+    return (unsigned int)(next / 65536) % 32768;
+}
+
+void srand(unsigned int seed)
+{
+    next = seed;
+}
+
+int str_len(char *str)
+{
+    int len = 0;
+    while (*str++ != '\0' && ++len)
+        ;
+    return len;
+}
+
+int charToInt(char *str)
+{
+    //"1234" -> 1234
+    int off = str_len(str);
+    int ret = 0;
+    while (off--)
+        ret = ret * 10 + (*str++ - '0');
+    return ret;
+}
+
+unsigned char bcdToInt(unsigned char byte)
+{
+    unsigned char res = 0;
+    res = (byte & 0x10) + (byte & 0x20) * 2 + (byte & 0x40) * 4 + (byte & 0x80) * 8;
+    res = (res << 4) + (byte & 0x1) + (byte & 0x2) * 2 + (byte & 0x4) * 4 + (byte & 0x8) * 8;
+    return res;
+}

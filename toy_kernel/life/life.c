@@ -2,6 +2,7 @@
 #include "../libc/mem.h"
 #include "../kernel/util.h"
 #include "../kernel/type.h"
+#include "../ports/ports.h"
 
 u16 vga[VIDEO_SIZE];
 u8 cell[VIDEO_SIZE];
@@ -21,17 +22,25 @@ rule copied from : https://www.zhihu.com/topic/19649581/hot
 当前细胞为存活状态时，当周围的存活细胞低于2个时（不包含2个），该细胞变成死亡状态。（模拟生命数量稀少）
 当前细胞为存活状态时，当周围有2个或3个存活细胞时，该细胞保持原样。
 当前细胞为存活状态时，当周围有超过3个存活细胞时，该细胞变成死亡状态。（模拟生命数量过多）
-
 当前细胞为死亡状态时，当周围有3个存活细胞时，该细胞变成存活状态。（模拟繁殖）
 */
+
 void initState()
 {
     for (int i = 0; i < VIDEO_SIZE; ++i)
         cell[i] = 0; //0 is dead , 1 is alive
-    for (int x = 0; x < 24; ++x)
-        for (int y = 12; y < 68; ++y)
-            if ((x + y) % 4 == 0)
-                cell[fromPosToIdx(x, y)] = 1;
+    int x, y;
+    byte_out(0x70, 0x2);
+    int al = byte_in(0x71);
+    byte_out(0x70, 0x0);
+    al = al << 8 | byte_in(0x71);
+    srand(al);
+    int cells = rand() % 1900 + 100;
+    for (int i = 0; i < cells; ++i)
+    {
+        fromIdxToPos(rand() % 2001, &x, &y);
+        cell[fromPosToIdx(x, y)] = 1;
+    }
 }
 
 void nextState()

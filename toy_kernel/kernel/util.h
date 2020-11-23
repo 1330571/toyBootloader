@@ -16,6 +16,8 @@
 #define UNITNOP9 12000
 #define UNITNOP10 14500
 
+int str_len(char *str);
+int charToInt(char *str);
 int fromPosToIdx(int x, int y);
 void fromIdxToPos(int idx, int *x, int *y);
 void print(int idx, char *str, char background);
@@ -27,5 +29,8 @@ int getCursorIdx();
 void clearScreen();
 void nop(int count);
 void waitForKey();
+int rand(void);
+void srand(unsigned int seed);
+unsigned char bcdToInt(unsigned char byte);
 
 #endif

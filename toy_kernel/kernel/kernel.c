@@ -33,12 +33,13 @@ void main()
     offset = fromPosToIdx(1, 0);
     makeColor(&color, 0, 1, 0);
     printWithCursor(offset, str4, color, UNITNOP2);
+    
     nop(UNITNOP6);
     refresh_display();
     initState();
     while (1)
     {
-        nop(UNITNOP3);
+        nop(UNITNOP5);
         nextState();
         refresh_display();
     }
