@@ -16,7 +16,7 @@ load_kernel :
     call print_and_wait
     ;load second sector, 2-stage boot load the second boot loader and then load kernel
     mov bx, SECOND_SECTOR
-    mov dh, 1;
+    mov dh, 6;
     mov dl, [BOOT_DRIVE]
     mov cl, 0x02
     call disk_load
@@ -24,7 +24,7 @@ load_kernel :
     ;load kernel
     mov bx, KERNEL_OFFSET
     mov dh, 30 ; 随便写一个大一点的数字，让后面的文件可以加载进来，我猜
-    mov cl, 0x03 ; 设置一下读取的扇区 
+    mov cl, 0x08 ; 设置一下读取的扇区 
     call disk_load
     ret
 
@@ -65,6 +65,7 @@ MSG_KEY_EVENT db 'Press key to next stage', 0
 times 510 - ($ - $$) db 0
 dw 0xAA55
 
+;sector2
 another_print:
     pusha
     mov ebx, WELCOME_AGAIN
@@ -72,5 +73,15 @@ another_print:
     popa
     ret
 
-WELCOME_AGAIN: db 'Hey Guys I Come Back, Do you like old stuff like this?Press key to c'
-times 1024 - ($ - $$) db 0
+WELCOME_AGAIN: db 'Hey Guys I Come Back, Do you like old stuff like this?I print from ASM LANG'
+times 0x400 - ($ - $$) db 0
+;sector3
+times 0x600 - ($ - $$) db 0
+;sector4
+times 0x800 - ($ - $$) db 0
+;sector5
+times 0xA00 - ($ - $$) db 0
+;sector6
+times 0xC00 - ($ - $$) db 0
+;sector7
+times 0xE00 - ($ - $$) db 0

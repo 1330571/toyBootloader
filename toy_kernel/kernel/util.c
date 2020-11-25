@@ -1,4 +1,6 @@
 #include "../ports/ports.h"
+#include "../libc/mem.h"
+#include "type.h"
 #include "util.h"
 #define REG_SCREEN_CTRL 0x3d4 //this is used for getting cursor position
 #define REG_SCREEN_DATA 0x3d5
@@ -33,8 +35,7 @@ void print(int idx, char *str, char background)
 void printWithCursor(int idx, char *str, char background, int waitTime)
 {
     if (waitTime == 0)
-        // waitTime = UNITNOP2;
-        waitTime = 0;
+        waitTime = UNITNOP2;
 
     int offset = 0;
     while (*str != '\0')
@@ -108,6 +109,13 @@ void nop(int count)
     for (int i = 0; i < count; ++i)
         for (int j = 0; j < count; ++j)
             ++nop_value;
+}
+
+void scrollOneLine()
+{
+    mem_cpy((i8 *)VIDEO_MEMORY + 160, (i8 *)VIDEO_MEMORY, 24 * 80 * 2);
+    for (int i = 0; i < 160; ++i)
+        ((u8 *)0xb8000)[i + 48 * 80] = (u8)0;
 }
 
 void waitForKey()

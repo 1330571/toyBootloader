@@ -33,5 +33,5 @@ int rand(void);
 void srand(unsigned int seed);
 unsigned char bcdToInt(unsigned char byte);
 void bcdTo2Bytes(unsigned char byte, char *high_byte, char *low_byte);
-
+void scrollOneLine();
 #endif

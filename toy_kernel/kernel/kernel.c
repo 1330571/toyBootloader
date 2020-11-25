@@ -33,13 +33,18 @@ void welcome_boot()
 
     offset = fromPosToIdx(1, 0);
     makeColor(&color, 0, 1, 0);
-    // printWithCursor(offset, str4, color, UNITNOP2);
-    printWithCursor(offset, str4, color, 0);
-    // nop(UNITNOP7);
+    printWithCursor(offset, str4, color, UNITNOP2);
+    nop(UNITNOP7);
 
     __asm__ volatile("call 0X7E00");
 
-    // nop(UNITNOP7);
+    nop(UNITNOP8);
+    for (int i = 0; i < 5; ++i)
+    {
+        nop(UNITNOP7);
+        scrollOneLine();
+    }
+
     refresh_display();
     initState();
     while (1)
