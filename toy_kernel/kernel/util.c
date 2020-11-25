@@ -33,7 +33,9 @@ void print(int idx, char *str, char background)
 void printWithCursor(int idx, char *str, char background, int waitTime)
 {
     if (waitTime == 0)
-        waitTime = UNITNOP2;
+        // waitTime = UNITNOP2;
+        waitTime = 0;
+
     int offset = 0;
     while (*str != '\0')
     {
@@ -153,4 +155,10 @@ unsigned char bcdToInt(unsigned char byte)
     res = (byte & 0x10) + (byte & 0x20) * 2 + (byte & 0x40) * 4 + (byte & 0x80) * 8;
     res = (res << 4) + (byte & 0x1) + (byte & 0x2) * 2 + (byte & 0x4) * 4 + (byte & 0x8) * 8;
     return res;
+}
+
+void bcdTo2Bytes(unsigned char byte, char *high_byte, char *low_byte)
+{
+    *high_byte = (byte & 0xF0) >> 4;
+    *low_byte = byte & 0x0F;
 }

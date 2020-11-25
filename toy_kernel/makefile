@@ -8,7 +8,7 @@ GDB = i386-elf-gdb
 LD = i386-elf-ld
 # Building Flags 
 FLAG := 
-CFLAGS = -ffreestanding -Wall -std=c11 -c
+CFLAGS = -ffreestanding -Wall -std=c11 -O0 -c 
 TESTFLAGS = -std=c11 -Wall -O2 ${FLAG} -Werror
 # $^ 会去除重复的部分 $< 是一个一个取出来的！
 

@@ -23,7 +23,7 @@ load_kernel :
 
     ;load kernel
     mov bx, KERNEL_OFFSET
-    mov dh, 16 ; 随便写一个大一点的数字，让后面的文件可以加载进来，我猜
+    mov dh, 30 ; 随便写一个大一点的数字，让后面的文件可以加载进来，我猜
     mov cl, 0x03 ; 设置一下读取的扇区 
     call disk_load
     ret
@@ -66,9 +66,11 @@ times 510 - ($ - $$) db 0
 dw 0xAA55
 
 another_print:
+    pusha
     mov ebx, WELCOME_AGAIN
-    call print_string_pm
+    call print_string_pm    
+    popa
     ret
 
-WELCOME_AGAIN: db 'Hey Guys I Come Back, Do you like old stuff like this?'
+WELCOME_AGAIN: db 'Hey Guys I Come Back, Do you like old stuff like this?Press key to c'
 times 1024 - ($ - $$) db 0

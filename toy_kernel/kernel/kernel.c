@@ -13,7 +13,7 @@ A Celluar Automata defined in wiki\n\
 And the very beginning of A Game Programmers' life\n\
 Have a good time to see Cellulars' life";
 
-void main()
+void welcome_boot()
 {
     int offset = fromPosToIdx(2, 0);
     printWithCursor(offset, hello_str, (char)0x0f, 0);
@@ -24,7 +24,8 @@ void main()
     char color = 0x0F;
     makeColor(&color, 0, 0, 1);
     offset = fromPosToIdx(5, 0);
-    printWithCursor(offset, str3, color, UNITNOP3);
+    // printWithCursor(offset, str3, color, UNITNOP3);
+    printWithCursor(offset, str3, color, 0);
 
     nop(UNITNOP5);
     clearScreen();
@@ -32,12 +33,13 @@ void main()
 
     offset = fromPosToIdx(1, 0);
     makeColor(&color, 0, 1, 0);
-    printWithCursor(offset, str4, color, UNITNOP2);
-    nop(UNITNOP7);
+    // printWithCursor(offset, str4, color, UNITNOP2);
+    printWithCursor(offset, str4, color, 0);
+    // nop(UNITNOP7);
 
     __asm__ volatile("call 0X7E00");
 
-    nop(UNITNOP7);
+    // nop(UNITNOP7);
     refresh_display();
     initState();
     while (1)
@@ -46,4 +48,8 @@ void main()
         nextState();
         refresh_display();
     }
+}
+void main()
+{
+    welcome_boot();
 }

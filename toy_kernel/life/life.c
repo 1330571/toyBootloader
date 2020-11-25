@@ -1,4 +1,4 @@
-//80 * 25
+///80 * 25
 #include "../libc/mem.h"
 #include "../kernel/util.h"
 #include "../kernel/type.h"
@@ -11,11 +11,6 @@ void renderDisplay();
 void nextState();
 void initState();
 
-void writeVga(u32 idx, u8 data, u8 attr)
-{
-    vga[idx] = attr << 8 | data;
-}
-
 /*
 rule copied from : https://www.zhihu.com/topic/19649581/hot
 每个细胞有两种状态 - 存活或死亡，每个细胞与以自身为中心的周围八格细胞产生互动（如图，黑色为存活，白色为死亡）
@@ -25,17 +20,28 @@ rule copied from : https://www.zhihu.com/topic/19649581/hot
 当前细胞为死亡状态时，当周围有3个存活细胞时，该细胞变成存活状态。（模拟繁殖）
 */
 
+void writeVga(u32 idx, u8 data, u8 attr)
+{
+    vga[idx] = attr << 8 | data; //小端注意！！！坑了很久
+}
+
+i32 getTime()
+{
+    byte_out(0x70, 0x2);
+    i32 al = byte_in(0x71);
+    byte_out(0x70, 0x0);
+    al = (al << 8) | byte_in(0x71);
+    return al;
+}
+
 void initState()
 {
     for (int i = 0; i < VIDEO_SIZE; ++i)
         cell[i] = 0; //0 is dead , 1 is alive
-    int x, y;
-    byte_out(0x70, 0x2);
-    int al = byte_in(0x71);
-    byte_out(0x70, 0x0);
-    al = al << 8 | byte_in(0x71);
+    i32 x, y;
+    i32 al = getTime();
     srand(al);
-    int cells = rand() % 1900 + 100;
+    i32 cells = rand() % 1900 + 100;
     for (int i = 0; i < cells; ++i)
     {
         fromIdxToPos(rand() % 2001, &x, &y);
@@ -69,13 +75,13 @@ void nextState()
             int curIdx = fromPosToIdx(i, j);
             if (cell[curIdx] == 1)
             {
-                //alive
+                //本来活着
                 if (aliveCount != 2 && aliveCount != 3)
                     cell[curIdx] = 0;
             }
             else
             {
-                //dead
+                //本来死了
                 if (aliveCount == 3)
                     cell[curIdx] = 1;
             }
@@ -99,6 +105,16 @@ void renderDisplay()
             else
                 writeVga(idx, ' ', aliveColor);
         }
+    int time = getTime();
+    char b1, b2, b3, b4;
+    bcdTo2Bytes((u8)((time & 0xFF00) >> 8), &b1, &b2);
+    bcdTo2Bytes((u8)(time & 0x00FF), &b3, &b4);
+    //b1 b2 b3 b4
+    writeVga(0, b1 + '0', 0x0f);
+    writeVga(1, b2 + '0', 0x0f);
+    writeVga(2, ':', 0x0f);
+    writeVga(3, b3 + '0', 0x0f);
+    writeVga(4, b4 + '0', 0x0f);
 }
 
 void refresh_display()
