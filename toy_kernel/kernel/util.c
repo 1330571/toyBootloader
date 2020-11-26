@@ -32,6 +32,12 @@ void print(int idx, char *str, char background)
     }
 }
 
+void printChar(int idx, char str, char background)
+{
+    ((char *)0xb8000)[idx * 2] = str;
+    ((char *)0xb8000)[idx * 2 + 1] = background;
+}
+
 void printWithCursor(int idx, char *str, char background, int waitTime)
 {
     if (waitTime == 0)
@@ -49,6 +55,7 @@ void printWithCursor(int idx, char *str, char background, int waitTime)
             tmp_y = 0;
             idx = fromPosToIdx(tmp_x, tmp_y);
             offset = 0;
+            setCursorIdx(offset + idx * 2);
             continue;
         }
         ((char *)0xb8000)[offset + idx * 2] = *str;
@@ -56,7 +63,9 @@ void printWithCursor(int idx, char *str, char background, int waitTime)
         setCursorIdx(offset + idx * 2);
         offset += 2;
         ++str;
+#ifdef RELEASE
         nop(waitTime);
+#endif
     }
 }
 
@@ -105,6 +114,9 @@ void setCursorIdx(int idx)
 
 void nop(int count)
 {
+#ifndef RELEASE
+    return;
+#endif
     int nop_value = 0;
     for (int i = 0; i < count; ++i)
         for (int j = 0; j < count; ++j)
@@ -169,4 +181,62 @@ void bcdTo2Bytes(unsigned char byte, char *high_byte, char *low_byte)
 {
     *high_byte = (byte & 0xF0) >> 4;
     *low_byte = byte & 0x0F;
+}
+
+void putChar(char data, i8 color)
+{
+    int cur = getCursorIdx() >> 1;
+    if (cur >= 25 * 80)
+    {
+        cur = 24 * 80;
+        scrollOneLine();
+    }
+    printChar(cur, data, color);
+    cur++;
+    setCursorIdx(cur * 2);
+}
+
+void int_to_ascii(int n, char str[])
+{
+    int i, sign;
+    if ((sign = n) < 0)
+        n = -n;
+    i = 0;
+    do
+    {
+        str[i++] = n % 10 + '0';
+    } while ((n /= 10) > 0);
+
+    if (sign < 0)
+        str[i++] = '-';
+    str[i] = '\0';
+}
+
+void putChars(char *data, i8 color)
+{
+    int cur = getCursorIdx() >> 1;
+
+    while (*data != '\0')
+    {
+        if (cur >= 25 * 80)
+        {
+            cur = 24 * 80;
+            scrollOneLine();
+        }
+        if (*data == '\n')
+        {
+            int x, y;
+            fromIdxToPos(cur, &x, &y);
+            y = 0;
+            x++;
+            cur = fromPosToIdx(x, y);
+        }
+        else
+        {
+            printChar(cur, *data, color);
+            ++cur;
+        }
+        setCursorIdx(cur * 2);
+        ++data;
+    }
 }

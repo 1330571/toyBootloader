@@ -45,27 +45,111 @@ int 0x16
 
 - 不可屏蔽中断 电源掉电、存储器出错、总线奇偶校验。
 
+- 处理器间中断
+
+- 伪中断
+
 内部中断，由 CPU 内部发生的额某个事件引起的中断称为内部中断，不受中断允许标志控制，不需要外部硬件支持，如果由中断产生的时候，根据 intel i386 manual:
 
 > if a trap is detected in a JMP instruction, the CS and EIP values pushed onto the stack point to the target of the JMP, not to the instruction after the JMP.
+
+### Interrupt Descriptor Table(From i386-manual and os-tutorial)
+
+这个表存储对应**异常**或是**中断**的服务指令位置
+
+> IDT is an array of 8-byte descriptors , contains at most 256 interrupts
+>
+> LIDT (Load IDT register)
+
+```plain
+		IDT LIMIT(15..0) --Select--> Gate For Interrupt #N
+IDT BASE 		 (31..0) ----------> Gate For Interrupt #0
+```
+
+**IDT Gate Descriptors**
+
+(type: Task Gate, Interrupt Gate, Trap Gate)
+
+- Task Gate -> P DPL 0 0 1 0 1 ......					| Task Switch
+- Interrupt Gate-> P DPL 0 1 1 1 0 0 0 0 ......   | Similar to call gate
+- Trap Gate-> P DPL 0 1 1 1 1 0 0 0 ......           | Similar to call gate
+
+```plain
+31..............16 15 ................... 0
+	   NOT USED			 P DPL (Based on type)	
+31..............16 15 ................... 0
+			SELECTOR						   OFFSET
+```
+
+Define as C struct
+
+```c
+typedef struct
+{
+    u16 low_offset; /* Lower 16 bits of handler function address */
+    u16 sel;        /* Kernel segment selector */
+    u8 always0;
+    /* First byte
+     * Bit 7: "Interrupt is present" ... P
+     * Bits 6-5: Privilege level of caller (0=kernel..3=user) ... DPL
+     * Bit 4: Set to 0 for interrupt gates
+     * Bits 3-0: bits 1110 = decimal 14 = "32 bit interrupt gate" */
+    u8 flags;
+    u16 high_offset; /* Higher 16 bits of handler function address */
+} __attribute__((packed)) idt_gate_t;
+```
+
+**Procedures**
+
+```plain
+						 |-------------------------------------------------> Offset
+						 |
+Interrupt ID-|--> Trap/Interrupt Gate ---> Segment Descriptor ---> Base
+```
+
+use *iret* to return from an interrupt, iret modify the eip while restore eflags
+**Stack Layout**
+
+```plain
+|	[(2Bytes),Old SS]
+| 		[Old Esp]
+|		Old Eflags 
+|(2Bytes) , Old Cs
+|			Old Eip
+|		[Error Code]
+```
+
+**Error Code Format**
+
+```Plain
+UNDEFINED 	SELECTOR INDEX 	TI I EX
+```
+
+
 
 ### CALL & INT(i386 manual)
 
 - CALL
 
-  > PUSH (IP)<br>
-  EIP <- EIP + 16 AND 0000FFFFH
+  > PUSH (IP)
+  >
+  > EIP <- EIP + 16 AND 0000FFFFH
 
 - INT
 
-  > PUSH (FLAGS)<br>
-  IF <- 0<br>
-  TF <- 0<br>
-  PUSH(CS)<br>
-  PUSH(IP)<br>
-  CS <- IDT[中断号 * 4].段选择子<br>
-  IP <- IDT[中断号*4].偏移
-  
+  > PUSH (FLAGS)
+  >
+  > IF <- 0
+  >
+  > TF <- 0
+  >
+  > PUSH(CS)
+  >
+  > PUSH(IP)
+  >
+  > CS <- IDT[中断号 * 4].段选择子
+  >
+  > IP <- IDT[中断号*4].偏移
 
 - 除法中断 0
 
@@ -73,14 +157,12 @@ int 0x16
 
 - 编译所有例子
 
-```shell
-    make all
-```
+make all
 
 - 清除所有目标文件
 
 ```shell
-    make clean
+make clean
 ```
 
 ## tools
@@ -88,6 +170,12 @@ int 0x16
 - nasm
 - qemu
 - i386-elf-\_g++
+
+## Hints
+
+**Declaration** type going to be used, but no memory is allocated
+
+**Definition** allocates the memory to variable or function
 
 ## reference
 

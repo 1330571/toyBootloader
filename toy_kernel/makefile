@@ -1,14 +1,15 @@
-SOURCES = ${wildcard kernel/*.c ports/*.c libc/*.c life/*.c}
-HEADERS = ${wildcard kernel/*.h ports/*.h libc/*.h life/*.h}
+SOURCES = ${wildcard kernel/*.c ports/*.c libc/*.c life/*.c interrupts/*.c fakefs/*.c}
+HEADERS = ${wildcard kernel/*.h ports/*.h libc/*.h life/*.h interrupts/*.h fakefs/*.h}
 # 对SOURCES变量集中的所有.c后缀替换为.o后缀
-OBJS = ${SOURCES:.c=.o}
+OBJS = ${SOURCES:.c=.o interrupts/interrupt.o}
 # Building Tools
 CC = i386-elf-gcc
 GDB = i386-elf-gdb
 LD = i386-elf-ld
 # Building Flags 
 FLAG := 
-CFLAGS = -ffreestanding -Wall -std=c11 -O0 -c 
+RELEASE := 
+CFLAGS = -ffreestanding -Wall -std=c11 -O0 -c -g ${RELEASE}
 TESTFLAGS = -std=c11 -Wall -O2 ${FLAG} -Werror
 # $^ 会去除重复的部分 $< 是一个一个取出来的！
 
@@ -44,7 +45,7 @@ debug: os.bin kernel.elf
 
 .PHONY : clean 
 clean :
-	rm boot/*.o boot/*.bin kernel/*.o ports/*.o kernel.bin os.bin libc/*.o life/*.o
+	rm boot/*.o boot/*.bin kernel/*.o ports/*.o kernel.bin os.bin libc/*.o life/*.o interrupts/*.o fakefs/*.o
 
 .PHONY : test
 test : 
