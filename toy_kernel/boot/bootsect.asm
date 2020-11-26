@@ -23,7 +23,7 @@ load_kernel :
 
     ;load kernel
     mov bx, KERNEL_OFFSET
-    mov dh, 30 ; 随便写一个大一点的数字，让后面的文件可以加载进来，我猜
+    mov dh, 50 ; 随便写一个大一点的数字，让后面的文件可以加载进来，我猜
     mov cl, 0x08 ; 设置一下读取的扇区 
     call disk_load
     ret

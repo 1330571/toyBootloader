@@ -125,8 +125,6 @@ use *iret* to return from an interrupt, iret modify the eip while restore eflags
 UNDEFINED 	SELECTOR INDEX 	TI I EX
 ```
 
-
-
 ### CALL & INT(i386 manual)
 
 - CALL

@@ -2,6 +2,8 @@
 #include "../ports/ports.h"
 #include "../life/life.h"
 #include "../interrupts/isr.h"
+#include "../fakefs/fakefs.h"
+
 char *video_memory = (char *)0xb8000;
 
 char *hello_str = "Toy kernel, Thanks for trying this useless toy";
@@ -55,7 +57,8 @@ void welcome_boot()
     printWithCursor(offset, str4, color, UNITNOP2);
     nop(UNITNOP7);
 
-    __asm__ volatile("call 0X7E00");
+    // __asm__ volatile("call 0X7E00");
+    execute_file_by_call(0x7E00);
 
     nop(UNITNOP8);
     char txt_to_show[] = "Wait 5...";

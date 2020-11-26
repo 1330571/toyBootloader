@@ -15,3 +15,4 @@ char mem_equ(char *src, char *src2)
         src++, src2++;
     }
 }
+

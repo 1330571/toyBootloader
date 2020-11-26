@@ -1,5 +1,5 @@
-SOURCES = ${wildcard kernel/*.c ports/*.c libc/*.c life/*.c interrupts/*.c fakefs/*.c}
-HEADERS = ${wildcard kernel/*.h ports/*.h libc/*.h life/*.h interrupts/*.h fakefs/*.h}
+SOURCES = ${wildcard kernel/*.c ports/*.c libc/*.c life/*.c interrupts/*.c fakefs/*.c device/*.c}
+HEADERS = ${wildcard kernel/*.h ports/*.h libc/*.h life/*.h interrupts/*.h fakefs/*.h device/*.h}
 # 对SOURCES变量集中的所有.c后缀替换为.o后缀
 OBJS = ${SOURCES:.c=.o interrupts/interrupt.o}
 # Building Tools
@@ -45,7 +45,7 @@ debug: os.bin kernel.elf
 
 .PHONY : clean 
 clean :
-	rm boot/*.o boot/*.bin kernel/*.o ports/*.o kernel.bin os.bin libc/*.o life/*.o interrupts/*.o fakefs/*.o
+	rm -rf boot/*.o boot/*.bin kernel/*.o ports/*.o kernel.bin os.bin libc/*.o life/*.o interrupts/*.o fakefs/*.o device/*.h
 
 .PHONY : test
 test : 

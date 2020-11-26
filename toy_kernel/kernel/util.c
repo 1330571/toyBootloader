@@ -210,6 +210,13 @@ void int_to_ascii(int n, char str[])
     if (sign < 0)
         str[i++] = '-';
     str[i] = '\0';
+
+    for (int k = 0, i = i - 1; k != i; ++k, --i)
+    {
+        int tmp = str[k];
+        str[k] = str[i];
+        str[i] = tmp;
+    }
 }
 
 void putChars(char *data, i8 color)
