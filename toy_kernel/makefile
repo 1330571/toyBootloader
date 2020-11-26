@@ -45,7 +45,7 @@ debug: os.bin kernel.elf
 
 .PHONY : clean 
 clean :
-	rm -rf boot/*.o boot/*.bin kernel/*.o ports/*.o kernel.bin os.bin libc/*.o life/*.o interrupts/*.o fakefs/*.o device/*.h
+	rm -rf boot/*.o boot/*.bin kernel/*.o ports/*.o kernel.bin os.bin libc/*.o life/*.o interrupts/*.o fakefs/*.o device/*.o
 
 .PHONY : test
 test : 

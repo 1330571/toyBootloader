@@ -3,6 +3,9 @@
 #include "../life/life.h"
 #include "../interrupts/isr.h"
 #include "../fakefs/fakefs.h"
+#include "../device/timer.h"
+#include "../device/keyboard.h"
+#include "sudoProc.h"
 
 char *video_memory = (char *)0xb8000;
 
@@ -34,6 +37,7 @@ char *program_name4 = "Program 4\n";
 char *program_name5 = "Program 5\n";
 char *program_name6 = "Program 6\n";
 
+char *welcome_str = "admin Login, toy OS, toy built : 2020 - 12 - 27\n";
 void welcome_boot()
 {
     int offset = fromPosToIdx(2, 0);
@@ -87,8 +91,8 @@ void welcome_boot()
 #define headpos 10
 void main()
 {
-    // putChars("Bad\nDays",0x0f);
 
+    // putChars("Bad\nDays",0x0f);
     setCursorIdx(0);
     //below code snippets is for printing single char,
     // for (int i = 0; i < 99999; ++i)
@@ -122,4 +126,14 @@ void main()
     printWithCursor(fromPosToIdx(headpos + 4, 21), program_name4, 0x0f, UNITNOP2);
     printWithCursor(fromPosToIdx(headpos + 5, 21), program_name5, 0x0f, UNITNOP2);
     printWithCursor(fromPosToIdx(headpos + 6, 21), program_name6, 0x0f, UNITNOP2);
+
+    __asm__ volatile("sti");
+
+    nop(UNITNOP7);
+
+    init_timer(50);
+    init_keyboard();
+    clearScreen();
+    printWithCursor(fromPosToIdx(0, 0), welcome_str, 0x0f, UNITNOP2);
+    newStart();
 }

@@ -125,6 +125,12 @@ use *iret* to return from an interrupt, iret modify the eip while restore eflags
 UNDEFINED 	SELECTOR INDEX 	TI I EX
 ```
 
+## Some Information about I/O Ports
+
+- [irq0 => Interrupt Timer](https://wiki.osdev.org/PIT)
+  - we could set the 0x43 port as **0x36(0011 1100)**
+- 
+
 ### CALL & INT(i386 manual)
 
 - CALL

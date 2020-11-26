@@ -38,4 +38,6 @@ void scrollOneLine();
 void printChar(int idx, char str, char background);
 void putChar(char data, char color);
 void putChars(char *data, char color);
+void backOneChar();
+
 #endif

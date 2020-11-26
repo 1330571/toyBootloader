@@ -210,8 +210,8 @@ void int_to_ascii(int n, char str[])
     if (sign < 0)
         str[i++] = '-';
     str[i] = '\0';
-
-    for (int k = 0, i = i - 1; k != i; ++k, --i)
+    int k = 0;
+    for (k = 0, i = i - 1; k < i; ++k, --i)
     {
         int tmp = str[k];
         str[k] = str[i];
@@ -246,4 +246,11 @@ void putChars(char *data, i8 color)
         setCursorIdx(cur * 2);
         ++data;
     }
+}
+
+void backOneChar()
+{
+    int idx = getCursorIdx();
+    putChar(' ', 0x0);
+    setCursorIdx(idx - 2);
 }
