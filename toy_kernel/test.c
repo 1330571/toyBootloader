@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #define KNRM "\x1B[0m"
 #define KRED "\x1B[31m"
@@ -24,6 +25,7 @@ test_suite *head = 0;
 
 void add_new_test(int (*test)())
 {
+
     if (head == 0)
     {
         head = (test_suite *)malloc(sizeof(test_suite));
@@ -59,11 +61,18 @@ int run_test_cases()
     test_suite *_head = head;
     while (_head != 0)
     {
+        struct timeval tv, tv2;
+        gettimeofday(&tv, NULL);
+
         if (head->test())
-            printf("%sTest Case %d Passed%s\n", KGRN, cnt++, OFF);
+        {
+            gettimeofday(&tv2, NULL);
+            printf("%sTest Case %d Passed%s Time: %ld ms\n", KGRN, cnt++, OFF, (tv2.tv_sec - tv.tv_sec) * 1000 + (tv2.tv_usec - tv.tv_usec) / 1000);
+        }
         else
         {
-            printf("%sTest Case %d Failed%s\n", KRED, cnt++, OFF);
+            gettimeofday(&tv2, NULL);
+            printf("%sTest Case %d Failed%s Time: %ld\n ms", KRED, cnt++, OFF, (tv2.tv_sec - tv.tv_sec) * 1000 + (tv2.tv_usec - tv.tv_usec) / 1000);
             clear(head);
             return 1;
         }
@@ -125,6 +134,19 @@ int test6()
     unsigned char ans2 = 35;
     return (bcdToInt(num) == ans1 && bcdToInt(num2) == ans2);
 }
+
+int test7()
+{
+    char a[] = "ABCDEF";
+    char b[] = "ABC";
+    char c[] = "BCD";
+    return (!mem_equ_ctl_by_src2(a, b) && mem_equ_ctl_by_src2(a, c));
+}
+
+int test8()
+{
+    return 0 == '\0';
+}
 /* This code aims to test function used in kernel */
 int main()
 {
@@ -134,5 +156,7 @@ int main()
     add_new_test(test4);
     add_new_test(test5);
     add_new_test(test6);
+    add_new_test(test7);
+    add_new_test(test8);
     return run_test_cases();
 }

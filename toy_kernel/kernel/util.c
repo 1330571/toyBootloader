@@ -78,6 +78,11 @@ void makeColor(char *src, int r, int g, int b)
     *src = *src | ((r != 0) << 2);
 }
 
+int add_value(int a, int b)
+{
+    return a + b;
+}
+
 void makeBackgroundColor(char *src, int r, int g, int b)
 {
     //1000 1111 = 8F
@@ -91,6 +96,7 @@ void clearScreen()
 {
     for (int i = 0; i < 4000; ++i)
         ((char *)0xb8000)[i] = 0;
+    setCursorIdx(0);
 }
 
 int getCursorIdx()
@@ -195,7 +201,30 @@ void putChar(char data, i8 color)
     cur++;
     setCursorIdx(cur * 2);
 }
+void int_to_hex_ascii(int n, char str[])
+{
+    int i, sign;
+    if ((sign = n) < 0)
+        n = -n;
+    i = 0;
+    do
+    {
+        str[i++] = n % 16 + '0';
+        if (str[i - 1] > '9')
+            str[i - 1] += 'A' - '9' - 1;
+    } while ((n /= 16) > 0);
 
+    if (sign < 0)
+        str[i++] = '-';
+    str[i] = '\0';
+    int k = 0;
+    for (k = 0, i = i - 1; k < i; ++k, --i)
+    {
+        int tmp = str[k];
+        str[k] = str[i];
+        str[i] = tmp;
+    }
+}
 void int_to_ascii(int n, char str[])
 {
     int i, sign;
@@ -251,6 +280,8 @@ void putChars(char *data, i8 color)
 void backOneChar()
 {
     int idx = getCursorIdx();
+    idx -= 2;
+    setCursorIdx(idx);
     putChar(' ', 0x0);
-    setCursorIdx(idx - 2);
+    setCursorIdx(idx);
 }

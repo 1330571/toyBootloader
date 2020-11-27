@@ -1,2 +1,2 @@
 void newStart();
-void terminal();
+void terminal(char *str);

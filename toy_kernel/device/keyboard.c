@@ -47,9 +47,8 @@ static void keyboard_callback(registers_t regs)
     else
     {
         char letter = sc_ascii[(int)scancode];
-        /* Remember that kprint only accepts char[] */
-        append(key_buffer, letter);
-        putChar(letter, BLACK_WHITE);
+        append(key_buffer, to_lower(letter));
+        putChar(to_lower(letter), BLACK_WHITE);
     }
     // #ifndef RELEASE
     //     if (ascii != 'X')

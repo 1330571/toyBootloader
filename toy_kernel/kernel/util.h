@@ -16,6 +16,7 @@
 #define UNITNOP9 12000
 #define UNITNOP10 14500
 
+void int_to_hex_ascii(int n, char str[]);
 void int_to_ascii(int n, char str[]);
 int str_len(char *str);
 int charToInt(char *str);
@@ -39,5 +40,5 @@ void printChar(int idx, char str, char background);
 void putChar(char data, char color);
 void putChars(char *data, char color);
 void backOneChar();
-
+int add_value(int a,int b);
 #endif

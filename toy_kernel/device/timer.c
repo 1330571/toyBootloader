@@ -10,7 +10,7 @@ static void timer_callback(registers_t regs)
     ++booting_tick;
     if (booting_tick % 50 != 0)
         return;
-#ifndef RELEASE
+#ifdef DETAIL
     putChars("Tick: ", 0x0f);
     char tick_data[256];
     int_to_ascii(booting_tick, tick_data);

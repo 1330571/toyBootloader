@@ -16,3 +16,14 @@ char mem_equ(char *src, char *src2)
     }
 }
 
+char mem_equ_ctl_by_src2(char *src, char *src2)
+{
+    while (1)
+    {
+        if (*src2 == 0)
+            return 0;
+        if (*src != *src2)
+            return *src - *src2;
+        src++, src2++;
+    }
+}

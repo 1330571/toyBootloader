@@ -16,7 +16,7 @@ load_kernel :
     call print_and_wait
     ;load second sector, 2-stage boot load the second boot loader and then load kernel
     mov bx, SECOND_SECTOR
-    mov dh, 6;
+    mov dh, 8; 工作程序扇区号
     mov dl, [BOOT_DRIVE]
     mov cl, 0x02
     call disk_load
@@ -24,7 +24,7 @@ load_kernel :
     ;load kernel
     mov bx, KERNEL_OFFSET
     mov dh, 50 ; 随便写一个大一点的数字，让后面的文件可以加载进来，我猜
-    mov cl, 0x08 ; 设置一下读取的扇区 
+    mov cl, 0x0A ; 设置一下读取的扇区 
     call disk_load
     ret
 
@@ -72,16 +72,35 @@ another_print:
     call print_string_pm    
     popa
     ret
-
+    
 WELCOME_AGAIN: db 'Hey Guys I Come Back, Do you like old stuff like this?I print from ASM LANG'
 times 0x400 - ($ - $$) db 0
+
 ;sector3
+db 'ABCDE','DrawFunc',0,'DESCRIPTION',0
 times 0x600 - ($ - $$) db 0
+
 ;sector4
+db 'ABCDE','DrawFunc2',0,'DESCRIPTION2',0
 times 0x800 - ($ - $$) db 0
+
 ;sector5
+db 'ABCDE','DrawFunc3',0,'DESCRIPTION3',0
 times 0xA00 - ($ - $$) db 0
+
 ;sector6
+db 'ABCDE','DrawFunc4',0,'DESCRIPTION4',0
 times 0xC00 - ($ - $$) db 0
+
 ;sector7
+db 'ABCDE','DrawFunc5',0,'DESCRIPTION5',0
 times 0xE00 - ($ - $$) db 0
+
+;sector8
+db 'ABCDE','DrawFunc6',0,'DESCRIPTION6',0
+times 0x1000 - ($ - $$) db 0
+
+;sector9
+db 'ABCDE','DrawFunc7',0,'DESCRIPTION7',0
+times 0x1200 - ($ - $$) db 0
+

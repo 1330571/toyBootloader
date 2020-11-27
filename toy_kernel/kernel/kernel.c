@@ -37,7 +37,7 @@ char *program_name4 = "Program 4\n";
 char *program_name5 = "Program 5\n";
 char *program_name6 = "Program 6\n";
 
-char *welcome_str = "admin Login, toy OS, toy built : 2020 - 12 - 27\n";
+char *welcome_str = "admin Login, toy OS, built at : 2020 - 12 - 27\n";
 void welcome_boot()
 {
     int offset = fromPosToIdx(2, 0);
@@ -78,9 +78,9 @@ void welcome_boot()
     initState();
     int _cnt = 0;
 #ifdef RELEASE
-    while (_cnt++ < 100)
+    while (_cnt++ < 5)
 #else
-    while (_cnt++ < 10)
+    while (_cnt++ < 5)
 #endif
     {
         nop(UNITNOP5);
@@ -102,13 +102,13 @@ void main()
     // }
     welcome_boot();
     clearScreen();
-    printWithCursor(fromPosToIdx(0, 0), finish_str, 0x0b, UNITNOP4);
-    printWithCursor(fromPosToIdx(1, 0), irq_install1, 0x0b, UNITNOP4);
+    printWithCursor(fromPosToIdx(0, 0), finish_str, 0x0b, UNITNOP2);
+    printWithCursor(fromPosToIdx(1, 0), irq_install1, 0x0b, UNITNOP2);
     nop(UNITNOP8);
     isr_install();
     __asm__ volatile("int $2");
     __asm__ volatile("int $3");
-    printWithCursor(getCursorIdx() >> 1, irq_install2, 0x0b, UNITNOP4);
+    printWithCursor(getCursorIdx() >> 1, irq_install2, 0x0b, UNITNOP2);
     nop(UNITNOP8);
     clearScreen();
     setCursorIdx(0);
@@ -131,8 +131,16 @@ void main()
 
     nop(UNITNOP7);
 
+    clearScreen();
+    putChars("Scanning Memory ...\n", BLACK_BLUE);
+    build_up_mem_map();
+
+    while (1)
+        ;
+
     init_timer(50);
     init_keyboard();
+
     clearScreen();
     printWithCursor(fromPosToIdx(0, 0), welcome_str, 0x0f, UNITNOP2);
     newStart();
