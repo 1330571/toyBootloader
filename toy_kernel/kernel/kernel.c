@@ -80,7 +80,7 @@ void welcome_boot()
 #ifdef RELEASE
     while (_cnt++ < 5)
 #else
-    while (_cnt++ < 5)
+    while (_cnt++ < 150)
 #endif
     {
         nop(UNITNOP5);
