@@ -41,4 +41,5 @@ void putChar(char data, char color);
 void putChars(char *data, char color);
 void backOneChar();
 int add_value(int a,int b);
+void special_put_chars(int x, int y, char *data, char color);
 #endif

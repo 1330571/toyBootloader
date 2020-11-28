@@ -10,14 +10,28 @@ u16 high_16(u32 data)
 {
     return (data & 0xFFFF0000) >> 16;
 }
+/*
+typedef struct
+{
+    u16 low_offset; 
+    u16 sel;       
+    u8 always0;
+     * Bit 7: "Interrupt is present"
+     * Bits 6-5: Privilege level of caller (0=kernel..3=user)
+     * Bit 4: Set to 0 for interrupt gates
+     * Bits 3-0: bits 1110 = decimal 14 = "32 bit interrupt gate" 
+    u8 flags;
+    u16 high_offset; 
+} __attribute__((packed)) idt_gate_t;
+*/
 void set_idt_gate(int n, u32 handler)
 {
     idt[n].low_offset = low_16(handler);
     idt[n].sel = KERNEL_CS;
     idt[n].always0 = 0;
-    idt[n].flags = 0x8E; //1000 1110
+    idt[n].flags = 0xEE; //1000 1110
     if (n == 32 || n == 33)
-        idt[n].flags = 0xEE; // 更高的优先级
+        idt[n].flags = 0x8E; //1110 1110更高的优先级
     idt[n].high_offset = high_16(handler);
 }
 

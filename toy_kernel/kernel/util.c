@@ -78,7 +78,6 @@ void makeColor(char *src, int r, int g, int b)
     *src = *src | ((r != 0) << 2);
 }
 
-
 int add_value(int a, int b)
 {
     return a + b;
@@ -192,6 +191,7 @@ void bcdTo2Bytes(unsigned char byte, char *high_byte, char *low_byte)
 
 void putChar(char data, i8 color)
 {
+    //put single char , '\n' will not work
     int cur = getCursorIdx() >> 1;
     if (cur >= 25 * 80)
     {
@@ -251,6 +251,7 @@ void int_to_ascii(int n, char str[])
 
 void putChars(char *data, i8 color)
 {
+    //putchars with cursor
     int cur = getCursorIdx() >> 1;
 
     while (*data != '\0')
@@ -280,9 +281,32 @@ void putChars(char *data, i8 color)
 
 void backOneChar()
 {
+    //consume one char and go back
+    //FIXME it will work strangely if keeping backspace
     int idx = getCursorIdx();
     idx -= 2;
     setCursorIdx(idx);
     putChar(' ', 0x0);
     setCursorIdx(idx);
+}
+
+void special_put_chars(int x, int y, char *data, char color)
+{
+    //this function specially write for print a block of letters picture
+    //thus when encounter \n it will not go back to the start of this line
+    //it will not change the cursor , remember
+    int curX = x, curY = y;
+    while (*data != '\0')
+    {
+        if (*data == '\n')
+        {
+            ++data;
+            curX++;
+            curY = y;
+            continue;
+        }
+        printChar(fromPosToIdx(curX, curY), *data, color);
+        ++curY;
+        ++data;
+    }
 }

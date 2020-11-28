@@ -131,6 +131,14 @@ void handle_print2(registers_t *r)
     char color = (r->eax >> 8) & 0xff;
     putChars(buffer, color);
 }
+void handle_print3(registers_t *r)
+{
+    char *buffer = (u8 *)r->ebx;
+    char color = (r->eax >> 8) & 0xff;
+    char x = (r->ecx >> 8) & 0xff;
+    char y = r->ecx & 0xff;
+    special_put_chars(x, y, buffer, color);
+}
 void handle_output(registers_t *r)
 {
     char buffer[10];
@@ -202,6 +210,17 @@ void isr_handler(registers_t r)
     }
     case 26:
     {
+        //error
+        // i32 t = booting_tick + r.eax;
+        // while (booting_tick < t)
+        //     ;
+        nop(r.eax);
+        break;
+    }
+    case 27:
+    {
+        handle_print3(&r);
+        break;
     }
     default:
     {

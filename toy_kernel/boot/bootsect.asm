@@ -94,6 +94,12 @@ db 'ABCDE','Logo',0,'See the Logo for this toy OS',0
     mov cl, 0
     int 20
 
+    mov ebx, LOGO3
+    mov ah, 0x0b
+    mov ch, 15
+    mov cl, 0
+    int 20
+
     int 23
     popa
     ret
@@ -114,7 +120,18 @@ LOGO2:
        db "*** *** *** *** *** *** *** *** *** *** ***",10
        db 0
 
-times 0x600 - ($ - $$) db 0
+LOGO3:
+db "__   __      __    __     ____           ",10
+db "/\ \ /\ \    /\ \  /\ \   /\  _`\        "  ,10
+db " \ `\`\/'/'   \ `\`\\/'/   \ \,\L\_\     ",10
+db "  `\/ > <      `\ `\ /'     \/_\__ \     ",10
+db "    \/'/\`\     `\ \ \       /\ \L\ \    ",10
+db "    /\_\\ \_\     \ \_\      \ `\____\   ",10
+db "    \/_/ \/_/      \/_/       \/_____/   ",0
+                                   
+                                   
+                                                                          
+times 0xA00 - ($ - $$) db 0
 
 ;sector4
 addr equ 0x100000
@@ -128,6 +145,10 @@ db 'ABCDE','Calc Package Price',0,'Count the price you should pay for package',0
     xor eax, eax
     int 22 ; 获取数字输入
     ; EAX -> EDX:EAX
+    mov ebx,.HELPSTR
+    mov ah,0x0b
+    int 24
+    
     mov eax,[addr]
     mov bh,0x0f
     int 25
@@ -152,46 +173,106 @@ db 'ABCDE','Calc Package Price',0,'Count the price you should pay for package',0
 
     mov ebx,.OUTSTR
     push eax
-    mov ah,0x0f
+    mov ah,0x0b
     int 24
     mov bh,0x0f
     pop eax
     int 25
 
+    mov eax,10;
+    ; int 26
+
     popa
     ret
 
 .MESSAGE db "below 5kg, 10 yuan, 5kg to 10kg, 2 yuan per kg",10,"above 10kg, 3 yuan per kg => ",0
+.HELPSTR db 10,"Your package weight => ",0
 .OUTSTR db " Your total cost => ",0
 
-times 0x800 - ($ - $$) db 0
-
-;sector5
-db 'ABCDE','JumpHero',0,'Work In Progress',0
-    pusha
-
-    popa
-    ret
-times 0xA00 - ($ - $$) db 0
-
-;sector6
-db 'ABCDE','DrawFunc4',0,'DESCRIPTION4',0
-    pusha
-
-    popa
-    ret
 times 0xC00 - ($ - $$) db 0
 
-;sector7
-db 'ABCDE','DrawFunc5',0,'DESCRIPTION5',0
+;sector5
+db 'ABCDE','JumpHero',0,'To see a hero jumping upside down',0
+    pusha
+
+    ;ch -> x , cl -> y
+    ;让这个小人跳来跳去，设置俩个变量，esp + 4 , esp + 8 表示 x，y的速度?
+    mov ch,15
+    mov cl,30
+    mov dword [esp + 4],-1 ; x速度 向上 
+    mov dword [esp + 8],1 ; y速度 向右
+    mov edx,2500 ; 1000 frame to die
+
+
+.loop:
+    int 21
+    mov ebx, .hero
+    mov ah, 0x0c
+    int 27
+    mov eax,1000
+    int 26
+    ;Process Animation 
+    add ch,[esp+4]
+    add cl,[esp+8]
+    cmp ch, 10 ; 10 就改向下
+    jne .check10
+    mov dword [esp+4], 1
+
+.check10:
+    cmp ch, 20 ; 20 就改向上
+    jne .xCheckOK
+    mov dword [esp+4], -1
+.xCheckOK:
+
+    cmp cl,60
+    jne .check50
+    mov dword [esp+8], -1 ; 反复横跳
+
+.check50:
+    cmp cl,20
+    jne .yCheckOK
+    mov dword [esp+8], 1 ; 反复横跳
+.yCheckOK:
+    ;
+    dec edx
+    or edx,edx
+    jnz .loop
+
+    popa
+    ret
+
+
+.hero:  db "*  *-*  *",10
+        db " * |*| * ",10
+        db "  **_**  ",10
+        db "   *|*   ",10
+        db "   *|*   ",10
+        db "   |*|   ",10
+        db "   ***   ",10
+        db "  ** **  ",10
+        db " *     * ",0
+
+
+times 0xE00 - ($ - $$) db 0
+
+;sector6
+db 'ABCDE','DrawFunc4',0,'This Program does not implement',0
     pusha
 
     popa
     ret
-times 0xE00 - ($ - $$) db 0
+times 0xE50 - ($ - $$) db 0
+
+;sector7
+db 'ABCDE','DrawFunc5',0,'This Program does not implement',0
+    pusha
+
+    popa
+    ret
+times 0xF00 - ($ - $$) db 0
 
 ;sector8
-db 'ABCDE','DrawFunc6',0,'DESCRIPTION6',0
+db 'ABCDE','DrawFunc6',0,'This Program does not implement',0
     pusha
 
     popa
@@ -199,7 +280,7 @@ db 'ABCDE','DrawFunc6',0,'DESCRIPTION6',0
 times 0x1000 - ($ - $$) db 0
 
 ;sector9
-db 'ABCDE','DrawFunc7',0,'DESCRIPTION7',0
+db 'ABCDE','DrawFunc7',0,'This Program does not implement',0
     pusha
 
     popa

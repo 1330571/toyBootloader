@@ -12,3 +12,9 @@ clean:
 .PHONY : run
 run:
 	cd toy_kernel && make run
+
+.PHONY : count
+count:
+	find . -name '*.c' | xargs wc -l
+	find . -name '*.h' | xargs wc -l
+	find . -name '*.asm' | xargs wc -l
