@@ -4,7 +4,7 @@
 
 ```c
 //int转char数组
-void int_to_ascii(int n, char str[]);  
+void int_to_ascii(int n, char str[]);
 //获取数组长度
 int str_len(char *str);
 //char转换为int
@@ -51,8 +51,21 @@ void putChars(char *data, char color);
 
 ## Usage
 
-
 ```shell
 make run
 ```
+
+## 中断改写
+
+**int 20** 输出一串字符串，ebx 表示地址,ah 表示输出字体的颜色，cl,ch 分表表示 y 轴和 x 轴的位置
+
+**int 21** 清除屏幕
+
+**int 22** 输入一个整型数字到 eax 中，按回车触发,不允许输入重复数字(不知道怎么解决)
+
+**int 23** 按键下一步
+
+**int 24** 往后输出，ebx表示地址，ah 表示输出字体的颜色
+
+**int 25** 输出eax的数值，bh表示颜色值
 

@@ -77,30 +77,132 @@ WELCOME_AGAIN: db 'Hey Guys I Come Back, Do you like old stuff like this?I print
 times 0x400 - ($ - $$) db 0
 
 ;sector3
-db 'ABCDE','DrawFunc',0,'DESCRIPTION',0
+db 'ABCDE','Logo',0,'See the Logo for this toy OS',0
+
+    pusha
+    int 21
+
+    mov ebx, LOGO
+    mov ah,  0x0f
+    mov ch,  0
+    mov cl,  0
+    int 20
+
+    mov ebx, LOGO2
+    mov ah, 0x0b
+    mov ch, 1
+    mov cl, 0
+    int 20
+
+    int 23
+    popa
+    ret
+
+LOGO: db "Toy Kernel, Welcome you ",0
+LOGO2: 
+       db 10
+       db "*** *** *** *** *** *** *** *** *** *** ***",10
+       db "*** *** *** *** *** *** *** *** *** *** ***",10
+       db 10
+       db " ******  ******   **    **  ******  *******",10
+       db "   **    *    *    **  **   *    *  *      ",10
+       db "   **    *    *     ****    *    *  *******",10
+       db "   **    *    *      **     *    *        *",10
+       db "   **    ******      *      ******  *******",10
+       db 10
+       db "*** *** *** *** *** *** *** *** *** *** ***",10
+       db "*** *** *** *** *** *** *** *** *** *** ***",10
+       db 0
+
 times 0x600 - ($ - $$) db 0
 
 ;sector4
-db 'ABCDE','DrawFunc2',0,'DESCRIPTION2',0
+addr equ 0x100000
+
+db 'ABCDE','Calc Package Price',0,'Count the price you should pay for package',0
+    pusha
+    
+    mov ebx,.MESSAGE
+    mov ah,0x0f
+    int 24
+    xor eax, eax
+    int 22 ; 获取数字输入
+    ; EAX -> EDX:EAX
+    mov eax,[addr]
+    mov bh,0x0f
+    int 25
+    cmp eax,5
+    jg .above5
+    mov eax,10
+    jmp .finish
+
+.above5:
+    cmp eax,10
+    jg .above10
+    mov ebx,2
+    mul ebx
+    jmp .finish
+
+.above10:
+    mov ebx,3
+    mul ebx
+    sub eax,10
+
+.finish:
+
+    mov ebx,.OUTSTR
+    push eax
+    mov ah,0x0f
+    int 24
+    mov bh,0x0f
+    pop eax
+    int 25
+
+    popa
+    ret
+
+.MESSAGE db "below 5kg, 10 yuan, 5kg to 10kg, 2 yuan per kg",10,"above 10kg, 3 yuan per kg => ",0
+.OUTSTR db " Your total cost => ",0
+
 times 0x800 - ($ - $$) db 0
 
 ;sector5
-db 'ABCDE','DrawFunc3',0,'DESCRIPTION3',0
+db 'ABCDE','JumpHero',0,'Work In Progress',0
+    pusha
+
+    popa
+    ret
 times 0xA00 - ($ - $$) db 0
 
 ;sector6
 db 'ABCDE','DrawFunc4',0,'DESCRIPTION4',0
+    pusha
+
+    popa
+    ret
 times 0xC00 - ($ - $$) db 0
 
 ;sector7
 db 'ABCDE','DrawFunc5',0,'DESCRIPTION5',0
+    pusha
+
+    popa
+    ret
 times 0xE00 - ($ - $$) db 0
 
 ;sector8
 db 'ABCDE','DrawFunc6',0,'DESCRIPTION6',0
+    pusha
+
+    popa
+    ret
 times 0x1000 - ($ - $$) db 0
 
 ;sector9
 db 'ABCDE','DrawFunc7',0,'DESCRIPTION7',0
+    pusha
+
+    popa
+    ret
 times 0x1200 - ($ - $$) db 0
 

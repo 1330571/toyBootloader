@@ -8,7 +8,7 @@ u32 booting_tick = 0;
 static void timer_callback(registers_t regs)
 {
     ++booting_tick;
-    if (booting_tick % 50 != 0)
+    if (booting_tick % 200 != 0)
         return;
 #ifdef DETAIL
     putChars("Tick: ", 0x0f);

@@ -32,6 +32,10 @@ static int cnt = 0;
 
 void build_up_mem_map()
 {
+    for (int i = 0; i < 16; ++i)
+    {
+        file[i].len = 0;
+    }
     char *mem = STARTMEMORY;
     while (mem < ENDMEMORY)
     {
@@ -43,8 +47,7 @@ void build_up_mem_map()
             file[cnt].program_name[file[cnt].len++] = '\0';
 
             ++mem; //跳过字符串截断
-
-
+            file[cnt].description[0] = '\0';
             //程序描述
             while (*mem != 0)
                 append(file[cnt].description, *mem++);
@@ -59,13 +62,13 @@ void build_up_mem_map()
             int_to_hex_ascii(file[cnt].start_addr, buffer);
 
             putChars(buffer, BLACK_BLUE);
-            nop(UNITNOP10);
 
             putChars("\n", 0x0f);
 
             putChars(file[cnt].description, BLACK_RED);
             putChars("\n", 0x0f);
             ++cnt;
+            nop(UNITNOP10);
         }
         ++mem;
     }

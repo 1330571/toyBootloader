@@ -13,6 +13,6 @@
 #define BLACK_RED 0x0c
 #define BLACK_GREEN 0x0a
 
-
+#define stop while(1);
 #endif
 

@@ -7,7 +7,6 @@
 void load_file(u8 *src, u8 *dst, u32 len);
 void execute_file_by_jmp(u32 addr);
 void execute_file_by_call(u32 addr);
-
 #define STARTMEMORY (char *)0x8000
 #define ENDMEMORY (char *)0x9000
 #define EXE_SIGNATURE "ABCDE"
@@ -20,5 +19,7 @@ typedef struct _fs
     u8 len;
     u32 start_addr;
 } fs;
+
+extern fs file[16];
 
 #endif

@@ -37,7 +37,7 @@ char *program_name4 = "Program 4\n";
 char *program_name5 = "Program 5\n";
 char *program_name6 = "Program 6\n";
 
-char *welcome_str = "admin Login, toy OS, built at : 2020 - 12 - 27\n";
+char *welcome_str = "admin Login, toy OS, built at : 2020 - 12 - 28\n";
 void welcome_boot()
 {
     int offset = fromPosToIdx(2, 0);
@@ -111,7 +111,9 @@ void main()
     printWithCursor(getCursorIdx() >> 1, irq_install2, 0x0b, UNITNOP2);
     nop(UNITNOP8);
     clearScreen();
+
     setCursorIdx(0);
+
     printWithCursor(fromPosToIdx(headpos, 0), work_program0, 0x0b, UNITNOP2);
     printWithCursor(fromPosToIdx(headpos + 1, 0), work_program1, 0x0b, UNITNOP2);
     printWithCursor(fromPosToIdx(headpos + 2, 0), work_program2, 0x0b, UNITNOP2);
@@ -135,12 +137,10 @@ void main()
     putChars("Scanning Memory ...\n", BLACK_BLUE);
     build_up_mem_map();
 
-    while (1)
-        ;
-
     init_timer(50);
     init_keyboard();
 
+    // stop
     clearScreen();
     printWithCursor(fromPosToIdx(0, 0), welcome_str, 0x0f, UNITNOP2);
     newStart();

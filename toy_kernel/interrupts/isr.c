@@ -1,12 +1,16 @@
 #include "isr.h"
 #include "../kernel/util.h"
 #include "../ports/ports.h"
+#include "../device/keyboard.h"
+#include "../device/timer.h"
+
 #include "idt.h"
 
 isr_t interrupt_handlers[256];
 
 /* Can't do this with a loop because we need the address
  * of the function names */
+
 void isr_install()
 {
     set_idt_gate(0, (u32)isr0);
@@ -113,15 +117,107 @@ char *exception_messages[] = {
     "Reserved",
     "Reserved"};
 
+void handle_print(registers_t *r)
+{
+    char *buffer = (u8 *)r->ebx;
+    char color = (r->eax >> 8) & 0xff;
+    char x = (r->ecx >> 8) & 0xff;
+    char y = r->ecx & 0xff;
+    printWithCursor(fromPosToIdx(x, y), buffer, color, UNITNOP2);
+}
+void handle_print2(registers_t *r)
+{
+    char *buffer = (u8 *)r->ebx;
+    char color = (r->eax >> 8) & 0xff;
+    putChars(buffer, color);
+}
+void handle_output(registers_t *r)
+{
+    char buffer[10];
+    char color = (r->ebx >> 8) & 0xff;
+    int_to_ascii(r->eax, buffer);
+    putChars(buffer, color);
+}
+
+#define valueAddr (u32 *)0x100000
 void isr_handler(registers_t r)
 {
-    putChars("Interrupt is triggered\n", 0x0b);
-    char s[3];
-    int_to_ascii(r.int_no, s);
-    putChars(s, 0x0f);
-    putChars("    ", 0x0f);
-    putChars(exception_messages[r.int_no], 0x0f);
-    putChars("\n", 0x0f);
+    switch (r.int_no)
+    {
+    case 20:
+    {
+        handle_print(&r);
+        break;
+    }
+    case 21:
+    {
+        clearScreen();
+        break;
+    }
+    case 22:
+    {
+        reset();
+        keyState = 666; //wait for Int Input
+
+        while (keyState == 666)
+            keyboard_callback(r);
+
+        char buffer[32];
+        int_to_ascii(value, buffer);
+
+        *valueAddr = value;
+
+#ifdef DETAIL
+        putChars("Your Input => ", BLACK_RED);
+        putChars(buffer, 0x0f);
+#endif
+        break;
+    }
+    case 23:
+    {
+        char b[] = "\nPress key to continue";
+        putChars(b, 0x0f);
+        nop(UNITNOP7);
+        u8 scancode = byte_in(0x60);
+        while (1)
+        {
+            u8 scancode2 = byte_in(0x60);
+            if (scancode2 > 57)
+                scancode2 = scancode;
+            if (scancode2 != scancode)
+                break;
+        }
+
+        break;
+    }
+    case 24:
+    {
+        handle_print2(&r);
+        break;
+    }
+    case 25:
+    {
+        handle_output(&r);
+        break;
+    }
+    case 26:
+    {
+    }
+    default:
+    {
+        putChars("Interrupt is triggered\n", 0x0b);
+        char s[32];
+        int_to_ascii(r.int_no, s);
+        putChars(s, 0x0f);
+        putChars("    ", 0x0f);
+        putChars(exception_messages[r.int_no], 0x0f);
+        putChars("   eax=", 0x0f);
+        char buffer[32];
+        int_to_ascii(r.eax, buffer);
+        putChars(buffer, 0x0f);
+        putChars("\n", 0x0f);
+    }
+    }
 }
 
 void register_interrupt_handler(u8 n, isr_t handler)

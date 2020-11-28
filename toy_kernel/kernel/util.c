@@ -78,6 +78,7 @@ void makeColor(char *src, int r, int g, int b)
     *src = *src | ((r != 0) << 2);
 }
 
+
 int add_value(int a, int b)
 {
     return a + b;
